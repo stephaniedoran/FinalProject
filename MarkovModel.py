@@ -148,14 +148,26 @@ class PatientCostUtilityMonitor:
                          (self._param.get_annual_state_utility(next_state))) * self._param.get_delta_t()
 
         # treatment cost (incurred only in post-stroke state)
-        #if current_state is P.HealthStats.POST_STROKE:
-        #    if next_state is P.HealthStats.DEATH:
-        #        cost += 0.5*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
-        #    else:
-        #        cost += 1*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+        if current_state is P.HealthStats.POST_TIA:
+            if next_state is P.HealthStats.DEAD_OTHER or next_state is P.HealthStats.DEAD_STROKE:
+                cost += 0.5*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+            else:
+                cost += 1*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
 
-        self._totalDiscountedCost += EconCls.pv(cost, self._param.get_adj_discount_rate()/2, 2*k+1)
-        self._totalDiscountedUtility += EconCls.pv(utility, self._param.get_adj_discount_rate()/2, 2*k+1)
+        if current_state is P.HealthStats.POST_MILD_STROKE:
+            if next_state is P.HealthStats.DEAD_OTHER or next_state is P.HealthStats.DEAD_STROKE:
+                cost += 0.5*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+            else:
+                cost += 1*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+
+        if current_state is P.HealthStats.POST_MODERATE_SEVERE_STROKE:
+            if next_state is P.HealthStats.DEAD_OTHER or next_state is P.HealthStats.DEAD_STROKE:
+                cost += 0.5*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+            else:
+                cost += 1*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
+
+        self._totalDiscountedCost += EconCls.pv(cost, self._param.get_adj_discount_rate(), k)
+        self._totalDiscountedUtility += EconCls.pv(utility, self._param.get_adj_discount_rate(), k)
 
     def get_total_discounted_cost(self):
         return self._totalDiscountedCost
