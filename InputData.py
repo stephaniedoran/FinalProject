@@ -1,5 +1,7 @@
 import numpy as np
 
+Hello this is Chloe! 
+
 POP_SIZE = 2000     # cohort population size
 SIM_LENGTH = 2     # length of simulation (years)
 ALPHA = 0.05        # significance level for calculating confidence intervals
