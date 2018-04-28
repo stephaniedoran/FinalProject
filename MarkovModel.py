@@ -5,11 +5,11 @@ import scr.EconEvalClasses as EconCls
 import ParameterClasses as P
 import InputData as Data
 
-# patient class simulates patient, patient monitor follows patient, cohort simulates a cohort,
-#  cohort outcome extracts info from simulation and returns it back
+# Patient class simulates patient, patient monitor follows patient, cohort simulates a cohort,
+# Cohort outcome extracts info from simulation and returns it back
 
 
-class Patient:  # when you store in self then all the things in that class have access to it
+class Patient:  
     def __init__(self, id, parameters):
         """ initiates a patient
         :param id: ID of the patient
@@ -28,13 +28,15 @@ class Patient:  # when you store in self then all the things in that class have 
 
     def simulate(self, sim_length):
         """ simulate the patient over the specified simulation length """
+        
         # random number generator for this patient
-        self._rng = rndClasses.RNG(self._id)  # from now on use random number generator from support library
+        self._rng = rndClasses.RNG(self._id)  
 
         k = 0  # current time step
 
         # while the patient is alive and simulation length is not yet reached
         while self._stateMonitor.get_if_alive() and k*self._delta_t < sim_length:
+            
             # find transition probabilities of future state
             trans_prob = self._param.get_transition_prob(self._stateMonitor.get_current_state())
             # create an empirical distribution
@@ -71,11 +73,11 @@ class PatientStateMonitor:
         :param parameters: patient parameters
         """
         # current health state
-        self._currentState = parameters.get_initial_health_state()
-        self._delta_t = parameters.get_delta_t()
-        self._survivalTime = 0
-        self._ifDevelopedStroke = False
-        self._strokecount = 0
+        self._currentState = parameters.get_initial_health_state()  # current health state
+        self._delta_t = parameters.get_delta_t()                    # simulation time step
+        self._survivalTime = 0                                      # survival time
+        self._ifDevelopedStroke = False                             # if the patient has a stroke
+        self._strokecount = 0                                       # number of strokes
 
         self._costUtilityOutcomes = PatientCostUtilityMonitor(parameters)
 
@@ -134,16 +136,20 @@ class PatientStateMonitor:
 class PatientCostUtilityMonitor:
 
     def __init__(self, parameters):
+        
+        # model parameters for this patient 
         self._param = parameters
+        
+        # total cost and utility 
         self._totalDiscountedCost = 0
         self._totalDiscountedUtility = 0
 
     def update(self, k, current_state, next_state):
-
-        # state cost and utility
+        
+        # update cost
         cost = 0.5*(self._param.get_annual_state_cost(current_state)
                     +(self._param.get_annual_state_cost(next_state))) * self._param.get_delta_t()
-
+        # update utility 
         utility = 0.5 * (self._param.get_annual_state_utility(current_state) +
                          (self._param.get_annual_state_utility(next_state))) * self._param.get_delta_t()
 
@@ -165,7 +171,8 @@ class PatientCostUtilityMonitor:
                 cost += 0.5*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
             else:
                 cost += 1*self._param.get_annual_treatment_cost() * self._param.get_delta_t()
-
+      
+        # update total discounted cost and utility
         self._totalDiscountedCost += EconCls.pv(cost, self._param.get_adj_discount_rate(), k)
         self._totalDiscountedUtility += EconCls.pv(utility, self._param.get_adj_discount_rate(), k)
 
@@ -218,10 +225,10 @@ class CohortOutputs:
         """
 
         self._survivalTimes = []        # patients' survival times
-        self._times_to_Stroke = []        # patients' times to stroke
-        self._count_strokes = []
-        self._utilities = []
-        self._costs = []
+        self._times_to_Stroke = []      # patients' times to stroke
+        self._count_strokes = []        # number of strokes
+        self._utilities = []            # patients' discounted total utilities
+        self._costs = []                # patients' discounted total costs 
 
         # survival curve
         self._survivalCurve = \
