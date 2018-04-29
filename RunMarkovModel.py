@@ -4,7 +4,7 @@ import SupportMarkovModel as SupportMarkov
 import scr.SamplePathClasses as PathCls
 import scr.FigureSupport as Figs
 
-# create and simulate cohort
+# create and simulate cohort for warfarin
 warfarin_cohort = MarkovCls.Cohort(
     id=1,
     therapy=P.Therapies.WARFARIN)
@@ -25,7 +25,7 @@ Figs.graph_histogram(
     title='Survival times of patients with Stroke, Warfarin',
     x_label='Survival time (years)',
     y_label='Counts',
-    bin_width=1
+    bin_width=0.5
 )
 
 # graph histogram of number of strokes
@@ -41,7 +41,8 @@ Figs.graph_histogram(
 SupportMarkov.print_outcomes(warfarin_simOutputs, 'Warfarin:')
 
 
-# create and simulate cohort
+# create and simulate cohort for dabigatran 110mg
+
 dabigatran_110_cohort = MarkovCls.Cohort(
     id=2,
     therapy=P.Therapies.DABIGATRAN_110MG)
@@ -62,7 +63,7 @@ Figs.graph_histogram(
     title='Survival times of patients with Stroke, Dabigatran 110',
     x_label='Survival time (years)',
     y_label='Counts',
-    bin_width=1
+    bin_width=0.5
 )
 
 # graph histogram of number of strokes
@@ -78,8 +79,7 @@ Figs.graph_histogram(
 SupportMarkov.print_outcomes(dabigatran_110_simOutputs, 'Dabigatran 110:')
 
 
-
-# create and simulate cohort
+# create and simulate cohort for dabigatran 150mg
 dabigatran_150_cohort = MarkovCls.Cohort(
     id=3,
     therapy=P.Therapies.DABIGATRAN_150MG)
@@ -100,7 +100,7 @@ Figs.graph_histogram(
     title='Survival times of patients with Stroke, Dabigatran 150',
     x_label='Survival time (years)',
     y_label='Counts',
-    bin_width=1
+    bin_width=0.5
 )
 
 # graph histogram of number of strokes

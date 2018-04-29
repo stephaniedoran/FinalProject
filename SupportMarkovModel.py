@@ -47,12 +47,9 @@ def print_outcomes(simOutput, therapy_name):
 
 
 def draw_survival_curves_and_histograms(simOutputs_warfarin, simOutputs_dabigatran_110, simOutputs_dabigatran_150):
-    """ draws the survival curves and the histograms of time until HIV deaths
-    :param simOutputs_mono: output of a cohort simulated under mono therapy
-    :param simOutputs_combo: output of a cohort simulated under combination therapy
-    """
+    # draws the survival curves and the histograms of time until death
 
-    # get survival curves of both treatments
+    # get survival curves of all treatments
     survival_curves = [
         simOutputs_warfarin.get_survival_curve(),
         simOutputs_dabigatran_110.get_survival_curve(),
@@ -80,20 +77,16 @@ def draw_survival_curves_and_histograms(simOutputs_warfarin, simOutputs_dabigatr
         title='Histogram of patient survival time',
         x_label='Survival time (year)',
         y_label='Counts',
-        bin_width=1,
+        bin_width=0.5,
         legend=['Warfarin', 'Dabigatran 110', 'Dabigatran 150'],
         transparency=0.6
     )
 
 
 def print_comparative_outcomes(simOutputs_A, simOutputs_B):
-    """ prints average increase in survival time, discounted cost, and discounted utility
-    under combination therapy compared to mono therapy
-    :param simOutputs_mono: output of a cohort simulated under mono therapy
-    :param simOutputs_combo: output of a cohort simulated under combination therapy
-    """
+    # prints average increase in survival time, discounted cost, and discounted utility
 
-    # increase in survival time under combination therapy with respect to mono therapy
+    # increase in survival time comparing two therapies
     increase_survival_time = Stat.DifferenceStatIndp(name="Increase in survival time",
                                                      x=simOutputs_B.get_survival_times(),
                                                      y_ref=simOutputs_A.get_survival_times())
@@ -106,7 +99,7 @@ def print_comparative_outcomes(simOutputs_A, simOutputs_B):
           "and {:.{prec}%} CI:".format(1 - Settings.ALPHA, prec=0),
           estimate_CI)
 
-    # increase in discounted total cost under combination therapy with respect to mono therapy
+    # increase in discounted total cost comparing two therapies
     increase_discounted_cost = Stat.DifferenceStatIndp(
         name='Increase in discounted cost',
         x=simOutputs_B.get_costs(),
@@ -122,7 +115,7 @@ def print_comparative_outcomes(simOutputs_A, simOutputs_B):
           "and {:.{prec}%} CI:".format(1 - Settings.ALPHA, prec=0),
           estimate_CI)
 
-    # increase in discounted total utility under combination therapy with respect to mono therapy
+    # increase in discounted total utility comparing two therapies
     increase_discounted_utility = Stat.DifferenceStatIndp(
         name='Increase in discounted cost',
         x=simOutputs_B.get_utilities(),
@@ -137,19 +130,21 @@ def print_comparative_outcomes(simOutputs_A, simOutputs_B):
           "and {:.{prec}%} CI:".format(1 - Settings.ALPHA, prec=0),
           estimate_CI)
 
+# report cost effectiveness analysis and cost benefit analysis
 
 def report_CEA_CBA(simOutputs_warfarin, simOutputs_dabigatran_110, simOutputs_dabigatran_150):
     warfarin_strategy=Econ.Strategy(name="Warfarin", cost_obs=simOutputs_warfarin.get_costs(),
                                       effect_obs=simOutputs_warfarin.get_utilities())
-    dabigatran_110_strategy=Econ.Strategy(name="Dabigatrin 110mg", cost_obs=simOutputs_dabigatran_110.get_costs(),
+    dabigatran_110_strategy=Econ.Strategy(name="Dabigatran 110mg", cost_obs=simOutputs_dabigatran_110.get_costs(),
                                             effect_obs=simOutputs_dabigatran_110.get_utilities())
-    dabigatran_150_strategy = Econ.Strategy(name="Dabigatrin 150mg", cost_obs=simOutputs_dabigatran_150.get_costs(),
+    dabigatran_150_strategy = Econ.Strategy(name="Dabigatran 150mg", cost_obs=simOutputs_dabigatran_150.get_costs(),
                                             effect_obs=simOutputs_dabigatran_150.get_utilities())
 
     listofStrategies = [warfarin_strategy, dabigatran_110_strategy, dabigatran_150_strategy]
 
     CEA = Econ. CEA(listofStrategies, if_paired=False)
 
+    # create cost effectiveness analysis plane
     CEA.show_CE_plane(
         title='Cost-Effectiveness Analysis',
         x_label='Additional discounted utility',
@@ -171,6 +166,7 @@ def report_CEA_CBA(simOutputs_warfarin, simOutputs_dabigatran_110, simOutputs_da
 
     CBA = Econ.CBA(listofStrategies, if_paired=False)
 
+    # Create Cost benefit analysis figure
     CBA.graph_deltaNMB_lines(
         min_wtp=0,
         max_wtp=50000,
@@ -180,4 +176,4 @@ def report_CEA_CBA(simOutputs_warfarin, simOutputs_dabigatran_110, simOutputs_da
         transparency=0.4,
         show_legend=True,
         figure_size=6,
-        title='cost benefit analysis')
+        title='Cost Benefit Analysis')

@@ -4,16 +4,16 @@ import SupportMarkovModel as SupportMarkov
 
 # simulate warfarin
 # create a cohort
-cohort_warfarin = MarkovCls.Cohort(id=0, therapy=P.Therapies.WARFARIN)
+cohort_warfarin = MarkovCls.Cohort(id=1, therapy=P.Therapies.WARFARIN)
 # simulate cohort
 simOutputs_warfarin = cohort_warfarin.simulate()
 
-# simulate dabigatran_110
-cohort_dabigatran_110 = MarkovCls.Cohort(id=1, therapy=P.Therapies.DABIGATRAN_110MG)
+# create and simulate cohort for dabigatran_110
+cohort_dabigatran_110 = MarkovCls.Cohort(id=2, therapy=P.Therapies.DABIGATRAN_110MG)
 simOutputs_dabigatran_110 = cohort_dabigatran_110.simulate()
 
-# simulate dabigatran_150
-cohort_dabigatran_150 = MarkovCls.Cohort(id=1, therapy=P.Therapies.DABIGATRAN_150MG)
+# create and simulate cohort dabigatran_150
+cohort_dabigatran_150 = MarkovCls.Cohort(id=3, therapy=P.Therapies.DABIGATRAN_150MG)
 simOutputs_dabigatran_150 = cohort_dabigatran_150.simulate()
 
 SupportMarkov.draw_survival_curves_and_histograms(simOutputs_warfarin=simOutputs_warfarin, simOutputs_dabigatran_110=simOutputs_dabigatran_110,

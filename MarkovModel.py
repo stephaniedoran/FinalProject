@@ -24,7 +24,7 @@ class Patient:
         # state monitor
         self._stateMonitor = PatientStateMonitor(parameters)
         # simulate time step
-        self._delta_t = parameters.get_delta_t() # length of time step!
+        self._delta_t = parameters.get_delta_t() # length of time step
 
     def simulate(self, sim_length):
         """ simulate the patient over the specified simulation length """
